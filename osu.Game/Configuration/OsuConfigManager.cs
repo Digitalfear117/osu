@@ -199,6 +199,9 @@ namespace osu.Game.Configuration
             SetDefault(OsuSetting.EditorAutoSeekOnPlacement, true);
             SetDefault(OsuSetting.EditorLimitedDistanceSnap, false);
             SetDefault(OsuSetting.EditorShowSpeedChanges, false);
+            SetDefault(OsuSetting.EditorRememberSliderCurveType, false);
+            SetDefault(OsuSetting.EditorEnableSliderCurveTypeHotkeys, false);
+            SetDefault(OsuSetting.EditorEnableLegacyCatmullSliderCurveType, false);
 
             SetDefault(OsuSetting.HideCountryFlags, false);
 
@@ -439,5 +442,8 @@ namespace osu.Game.Configuration
         UserOnlineStatus,
         MultiplayerRoomFilter,
         HideCountryFlags,
+        EditorRememberSliderCurveType,
+        EditorEnableSliderCurveTypeHotkeys,
+        EditorEnableLegacyCatmullSliderCurveType,
     }
 }

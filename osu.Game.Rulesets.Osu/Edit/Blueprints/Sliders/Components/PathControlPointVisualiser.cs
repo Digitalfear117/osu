@@ -11,6 +11,7 @@ using System.Linq;
 using Humanizer;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
+using osu.Framework.Configuration;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
@@ -20,6 +21,7 @@ using osu.Framework.Input;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
 using osu.Framework.Utils;
+using osu.Game.Configuration;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Rulesets.Edit;
 using osu.Game.Rulesets.Objects;
@@ -35,6 +37,8 @@ namespace osu.Game.Rulesets.Osu.Edit.Blueprints.Sliders.Components
         where T : OsuHitObject, IHasPath
     {
         public override bool ReceivePositionalInputAt(Vector2 screenSpacePos) => true; // allow context menu to appear outside of the playfield.
+
+        private OsuConfigManager configManager;
 
         internal readonly Container<PathControlPointPiece<T>> Pieces;
 
@@ -65,6 +69,12 @@ namespace osu.Game.Rulesets.Osu.Edit.Blueprints.Sliders.Components
                 new PathControlPointConnection<T>(hitObject),
                 Pieces = new Container<PathControlPointPiece<T>> { RelativeSizeAxes = Axes.Both }
             };
+        }
+
+        [BackgroundDependencyLoader]
+        private void load(OsuConfigManager configManager)
+        {
+            this.configManager = configManager;
         }
 
         protected override void LoadComplete()
@@ -400,8 +410,15 @@ namespace osu.Game.Rulesets.Osu.Edit.Blueprints.Sliders.Components
                 curveTypeItems.Add(createMenuItemForPathType(PathType.BEZIER));
                 curveTypeItems.Add(createMenuItemForPathType(PathType.BSpline(4)));
 
+                // an alternative method to show my beloved catmull slider curve type to those who want it
                 if (selectedPieces.Any(piece => piece.ControlPoint.Type?.Type == SplineType.Catmull))
+                {
                     curveTypeItems.Add(createMenuItemForPathType(PathType.CATMULL));
+                }
+                else if (configManager.Get<bool>(OsuSetting.EditorEnableLegacyCatmullSliderCurveType))
+                {
+                    curveTypeItems.Add(createMenuItemForPathType(PathType.CATMULL));
+                }
 
                 var menuItems = new List<MenuItem>
                 {

@@ -211,6 +211,9 @@ namespace osu.Game.Screens.Edit
         private Bindable<bool> editorHitMarkers;
         private Bindable<bool> editorAutoSeekOnPlacement;
         private Bindable<bool> editorLimitedDistanceSnap;
+        private Bindable<bool> editorRememberSliderCurveType;
+        private Bindable<bool> editorEnableSliderCurveTypeHotkeys;
+        private Bindable<bool> editorEnableLegacyCatmullSliderCurveType;
 
         public Editor(EditorLoader loader = null)
         {
@@ -305,6 +308,9 @@ namespace osu.Game.Screens.Edit
             editorHitMarkers = config.GetBindable<bool>(OsuSetting.EditorShowHitMarkers);
             editorAutoSeekOnPlacement = config.GetBindable<bool>(OsuSetting.EditorAutoSeekOnPlacement);
             editorLimitedDistanceSnap = config.GetBindable<bool>(OsuSetting.EditorLimitedDistanceSnap);
+            editorRememberSliderCurveType = config.GetBindable<bool>(OsuSetting.EditorRememberSliderCurveType);
+            editorEnableSliderCurveTypeHotkeys = config.GetBindable<bool>(OsuSetting.EditorEnableSliderCurveTypeHotkeys);
+            editorEnableLegacyCatmullSliderCurveType = config.GetBindable<bool>(OsuSetting.EditorEnableLegacyCatmullSliderCurveType);
 
             AddInternal(new OsuContextMenuContainer
             {
@@ -378,6 +384,24 @@ namespace osu.Game.Screens.Edit
                                         Items = new MenuItem[]
                                         {
                                             new EditorMenuItem(EditorStrings.SetPreviewPointToCurrent, MenuItemType.Standard, SetPreviewPointToCurrentTime)
+                                        }
+                                    },
+                                    new MenuItem(CommonStrings.MenuBarCompose)
+                                    {
+                                        Items = new MenuItem[]
+                                        {
+                                            new ToggleMenuItem(EditorStrings.RememberSliderCurveType)
+                                            {
+                                                State = { BindTarget = editorRememberSliderCurveType },
+                                            },
+                                            new ToggleMenuItem(EditorStrings.EnableSliderCurveTypeHotkeys)
+                                            {
+                                                State = { BindTarget = editorEnableSliderCurveTypeHotkeys },
+                                            },
+                                            new ToggleMenuItem(EditorStrings.EnableLegacyCatmullSliderCurveType)
+                                            {
+                                                State = { BindTarget = editorEnableLegacyCatmullSliderCurveType },
+                                            }
                                         }
                                     }
                                 }
