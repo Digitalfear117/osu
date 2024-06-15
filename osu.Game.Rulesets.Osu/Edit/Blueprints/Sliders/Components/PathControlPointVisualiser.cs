@@ -226,10 +226,10 @@ namespace osu.Game.Rulesets.Osu.Edit.Blueprints.Sliders.Components
                     break;
             }
         }
-
         protected override bool OnClick(ClickEvent e)
         {
-            if (!inputManager.CurrentState.Keyboard.ControlPressed && e.Button != MouseButton.Right)
+            // Check if Control or Shift is pressed to avoid deselection
+            if (!inputManager.CurrentState.Keyboard.ControlPressed && !inputManager.CurrentState.Keyboard.ShiftPressed)
             {
                 if (Pieces.Any(piece => piece.IsHovered))
                     return false;
@@ -257,25 +257,30 @@ namespace osu.Game.Rulesets.Osu.Edit.Blueprints.Sliders.Components
         public void OnReleased(KeyBindingReleaseEvent<PlatformAction> e)
         {
         }
-
         private void selectionRequested(PathControlPointPiece<T> piece, MouseButtonEvent e)
         {
             if (e.Button == MouseButton.Left && inputManager.CurrentState.Keyboard.ControlPressed)
             {
-                toggleControlPointType(piece.ControlPoint);
-                piece.IsSelected.Value = false;
+                // Change the slider curve type here
+                changeControlPointTypeToMatchSliderHead(piece.ControlPoint);
+            }
+            else if (e.Button == MouseButton.Left && inputManager.CurrentState.Keyboard.ShiftPressed)
+            {
+                // Allow multi-selection with Shift key
+                piece.IsSelected.Value = !piece.IsSelected.Value;
             }
             else if (e.Button == MouseButton.Left)
             {
-                piece.IsSelected.Toggle();
+                // Handle normal selection by selecting the clicked point and deselecting others
+                SetSelectionTo(piece.ControlPoint);
             }
             else if (e.Button == MouseButton.Right)
             {
+                // Right-click selects the control point
                 piece.IsSelected.Value = true;
             }
         }
-
-        private void toggleControlPointType(PathControlPoint controlPoint)
+        private void changeControlPointTypeToMatchSliderHead(PathControlPoint controlPoint)
         {
             if (hitObject.Path.ControlPoints.Count > 0)
             {
@@ -295,19 +300,6 @@ namespace osu.Game.Rulesets.Osu.Edit.Blueprints.Sliders.Components
             }
         }
 
-        /// <summary>
-        /// This recreates the action of making red anchors on Stable
-        /// </summary>
-        /// <param name="controlPoint"></param>
-        private void changeControlPointTypeToMatchSliderHead(PathControlPoint controlPoint)
-        {
-            if (hitObject.Path.ControlPoints.Count > 0)
-            {
-                var headControlPoint = hitObject.Path.ControlPoints[0];
-                controlPoint.Type = headControlPoint.Type;
-                EnsureValidPathTypes();
-            }
-        }
 
         /// <summary>
         /// Attempts to set the given control point piece to the given path type.
