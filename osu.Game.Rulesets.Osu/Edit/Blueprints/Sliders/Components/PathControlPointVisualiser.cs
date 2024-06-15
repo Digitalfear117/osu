@@ -229,12 +229,15 @@ namespace osu.Game.Rulesets.Osu.Edit.Blueprints.Sliders.Components
 
         protected override bool OnClick(ClickEvent e)
         {
-            if (Pieces.Any(piece => piece.IsHovered))
-                return false;
-
-            foreach (var piece in Pieces)
+            if (!inputManager.CurrentState.Keyboard.ControlPressed && e.Button != MouseButton.Right)
             {
-                piece.IsSelected.Value = false;
+                if (Pieces.Any(piece => piece.IsHovered))
+                    return false;
+
+                foreach (var piece in Pieces)
+                {
+                    piece.IsSelected.Value = false;
+                }
             }
 
             return false;
@@ -258,9 +261,52 @@ namespace osu.Game.Rulesets.Osu.Edit.Blueprints.Sliders.Components
         private void selectionRequested(PathControlPointPiece<T> piece, MouseButtonEvent e)
         {
             if (e.Button == MouseButton.Left && inputManager.CurrentState.Keyboard.ControlPressed)
+            {
+                toggleControlPointType(piece.ControlPoint);
+                piece.IsSelected.Value = false;
+            }
+            else if (e.Button == MouseButton.Left)
+            {
                 piece.IsSelected.Toggle();
-            else
-                SetSelectionTo(piece.ControlPoint);
+            }
+            else if (e.Button == MouseButton.Right)
+            {
+                piece.IsSelected.Value = true;
+            }
+        }
+
+        private void toggleControlPointType(PathControlPoint controlPoint)
+        {
+            if (hitObject.Path.ControlPoints.Count > 0)
+            {
+                var headControlPoint = hitObject.Path.ControlPoints[0];
+
+                // If the control point type matches the head's type, set it to inherit (null)
+                if (controlPoint.Type == headControlPoint.Type)
+                {
+                    controlPoint.Type = null;
+                }
+                else
+                {
+                    controlPoint.Type = headControlPoint.Type;
+                }
+
+                EnsureValidPathTypes();
+            }
+        }
+
+        /// <summary>
+        /// This recreates the action of making red anchors on Stable
+        /// </summary>
+        /// <param name="controlPoint"></param>
+        private void changeControlPointTypeToMatchSliderHead(PathControlPoint controlPoint)
+        {
+            if (hitObject.Path.ControlPoints.Count > 0)
+            {
+                var headControlPoint = hitObject.Path.ControlPoints[0];
+                controlPoint.Type = headControlPoint.Type;
+                EnsureValidPathTypes();
+            }
         }
 
         /// <summary>
@@ -410,12 +456,7 @@ namespace osu.Game.Rulesets.Osu.Edit.Blueprints.Sliders.Components
                 curveTypeItems.Add(createMenuItemForPathType(PathType.BEZIER));
                 curveTypeItems.Add(createMenuItemForPathType(PathType.BSpline(4)));
 
-                // an alternative method to show my beloved catmull slider curve type to those who want it
                 if (selectedPieces.Any(piece => piece.ControlPoint.Type?.Type == SplineType.Catmull))
-                {
-                    curveTypeItems.Add(createMenuItemForPathType(PathType.CATMULL));
-                }
-                else if (configManager.Get<bool>(OsuSetting.EditorEnableLegacyCatmullSliderCurveType))
                 {
                     curveTypeItems.Add(createMenuItemForPathType(PathType.CATMULL));
                 }

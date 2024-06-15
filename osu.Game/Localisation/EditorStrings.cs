@@ -134,21 +134,6 @@ namespace osu.Game.Localisation
         /// </summary>
         public static LocalisableString FailedToParseEditorLink => new TranslatableString(getKey(@"failed_to_parse_edtior_link"), @"Failed to parse editor link");
 
-        /// <summary>
-        /// "Remember slider curve type"
-        /// </summary>
-        public static LocalisableString RememberSliderCurveType => new TranslatableString(getKey(@"remember_slider_curve_type"), @"Remember slider curve type");
-
-        /// <summary>
-        /// "Enable slider curve type hotkeys"
-        /// </summary>
-        public static LocalisableString EnableSliderCurveTypeHotkeys => new TranslatableString(getKey(@"enable_slider_curve_type_hotkeys"), @"Enable slider curve type hotkeys");
-
-        /// <summary>
-        /// "Enable legacy catmull slider curve type"
-        /// </summary>
-        public static LocalisableString EnableLegacyCatmullSliderCurveType => new TranslatableString(getKey(@"enable_legacy_catmull_slider_curve_type"), @"Enable legacy catmull slider curve type");
-
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

@@ -125,11 +125,6 @@ namespace osu.Game.Localisation
         public static LocalisableString MenuBarView => new TranslatableString(getKey(@"menu_bar_view"), @"View");
 
         /// <summary>
-        /// "Compose"
-        /// </summary>
-        public static LocalisableString MenuBarCompose => new TranslatableString(getKey(@"menu_bar_compose"), @"Compose");
-
-        /// <summary>
         /// "Undo"
         /// </summary>
         public static LocalisableString Undo => new TranslatableString(getKey(@"undo"), @"Undo");
